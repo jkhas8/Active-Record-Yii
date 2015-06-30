@@ -12,7 +12,7 @@ $post->content = 'post body content';
 $post->save();
 ```
 
-Phần tiếp theo mô tả cách để cài đặt AR và sử dụng nó để thực hiện các thao tác CURD. Chú ý: Nếu bạn sử dụng MySQL thì nên thay `AUTOINCREMENT` bằng `AUTO_INCREMENT` trong câu lệnh SQL. Ví dụ:
+Phần tiếp theo mô tả cách để cài đặt AR và sử dụng nó để thực hiện các thao tác CURD. **Chú ý:** Nếu bạn sử dụng MySQL thì nên thay `AUTOINCREMENT` bằng `AUTO_INCREMENT` trong câu lệnh SQL. Ví dụ:
 
 ```SQL
 CREATE TABLE tbl_post (
@@ -23,4 +23,9 @@ CREATE TABLE tbl_post (
 );
 ```
 
+**Chú ý:**
 
+> AR không thể giải quyết được tất cả các tác vụ có liên quan đến DB. AR
+> được sử dụng tốt nhất trong mô hình bảng cơ sở dữ liệu và thực hiện
+> các truy vấn không quá phức tạp. Với những kịch bản phức tạp, Yii
+> khuyên bạn nên dùng Yii DAO
