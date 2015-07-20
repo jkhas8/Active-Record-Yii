@@ -29,3 +29,27 @@ CREATE TABLE tbl_post (
 > được sử dụng tốt nhất trong mô hình bảng cơ sở dữ liệu và thực hiện
 > các truy vấn không quá phức tạp. Với những kịch bản phức tạp, Yii
 > khuyên bạn nên dùng Yii DAO
+
+# Thiết lập kết nối đến Cơ sở dữ liệu
+
+AR thực hiện các thao tác liên quan đến Cơ sở dữ liệu phụ thuộc vào sự
+kết nối. ở chế độ mặc định, Yii đưa ra db application component sử dụng `CDbConnection` để đáp ứng như DB
+connection. Ví dụ:
+
+```Yii
+return array(
+  'components'=>array(
+    'db'=>array(
+      'class'=>'system.db.CDbConnection',
+      'connectionString'=>'sqlite:path/to/dbfile',
+      // turn on schema caching to improve performance
+      // 'schemaCachingDuration'=>3600,
+    ),
+  ),
+);
+```
+
+
+
+# Tài liệu tham khảo
+- http://www.yiiframework.com/doc/guide/1.1/en/database.ar
