@@ -36,7 +36,7 @@ AR thực hiện các thao tác liên quan đến Cơ sở dữ liệu phụ thu
 kết nối. ở chế độ mặc định, Yii đưa ra db application component sử dụng `CDbConnection` để đáp ứng như DB
 connection. Ví dụ:
 
-```Yii
+```php
 return array(
   'components'=>array(
     'db'=>array(
