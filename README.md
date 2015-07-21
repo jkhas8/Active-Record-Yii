@@ -1,5 +1,5 @@
-Active Record trong Yii Framework
-=================================
+Active Record trong Yii Framework 1.1
+=====================================
 
 Mặc dù Yii DAO có thể giải quyết được hấu như mọi việc liên quan đến database, nhưng việc này làm các lập trình viên tốn đến 90% thời gian của mình dành cho các câu lệnh SQL (CURD). Thật là khó để đảm bảo code của họ khi mà phải trộn lần code với câu lênh SQL. Để giải quyết việc này, Yii đã sử dụng Active Record.
 
@@ -49,6 +49,27 @@ return array(
 );
 ```
 
+**Mẹo nhỏ:**
+
+> Bởi vì Active Record dựa vào các metadata của các bảng để định rõ
+> thông tin của cột, vì thế nên tốn thời gian cho việc đọc và phân tích các metadata. Nếu sơ đồ CSDL ít thay đổi, bạn nên bật schema caching bằng việc thiết lập thuộc tính `CDbConnection::schemaCachingDuration` về giá trị lớn hơn 0.
+
+Active Record chỉ hỗ trợ giới hạn trong DBMS:
+- MySQL 4.1 hoặc mới hơn.
+- MariaDB.
+- PostgreSQL 7.3 hoặc mới hơn.
+- SQLite 2, 3.
+- Microsoft SQL Server 2000 hoặc mới hơn.
+- Oracle.
+
+Nếu muốn sử dụng một application component khác db, hoặc làm việc với
+nhiều database sử dụng Active Record, bạn nên thông qua `
+CActiveRecord::getDbConnection()`. Lớp `CActiveRecord` sẽ là lớp cơ sở
+cho tất cả các lớp Active Record khác.
+
+**Mẹo nhỏ:**
+
+> Có 2 cách để làm việc với nhiều DB trong Active Record. Nếu
 
 
 # Tài liệu tham khảo
