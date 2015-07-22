@@ -133,6 +133,35 @@ $post->title='a sample post';
 Mặc dù, chưa khai báo thuộc tính `title` trong lớp `Post`, nhưng ta vẫn
 có thể gán giá trị cho nó trong ví dụ trên. Đó là bởi `title` là một cột
 của bảng `tb1_post`, và `CActiveRecord` khiến nó có thể được sử dụng như
-là một thuộc tính với sự giúp đỡ của phương thức ``PHP __get()``. 
+là một thuộc tính với sự giúp đỡ của phương thức ``PHP __get()``. Một ngoại lệ sẽ được bỏ qua nếu ta cố truy cập vào một cột không tồn tại với cùng một cách.
+
+**Thông tin thêm:**
+
+> Trong bài viết này, tôi sẽ sử dụng trường hợp đơn giản nhất cho tất cả các tên bảng và tên cột. Sử dụng như vậy bỏi sự xử lý của DBMS khác nhau với từng trường hợp đặc biệt khác nhau.
+
+AR phụ thuộc vào những khóa chính được xác định của các bảng. Nếu một bảng không có khóa chính thì nó sẽ yêu cầu lớp AR chỉ rõ cột/các cột nào sẽ là khóa chính thông qua phương thức `primaryKey()` như ví dụ sau:
+
+```php
+public function primaryKey() {
+  return 'id';
+  // For composite primary key, return an array like the following
+  // return array('pk1', 'pk2');
+}
+```
+
+# Tạo bản ghi
+
+Để thêm dòng mới vào bảng cơ sở dữ liệu, ta tạo ra một trường hợp tương ứng với lớp AR, đặt các thuộc tính cho nó tương ứng với các cột trong bảng. Cuối cùng gọi phương thức `save()` để kết thúc.
+
+```php
+$post=new Post;
+$post->title='sample post';
+$post->content='content for the sample post';
+$post->create_time=time();
+$post->save();
+```
+
+Nếu khóa chính của bảng được tăng tự động, sau khi thêm, nó sẽ chứa một khóa chính đã được cập nhật. Trong ví dụ trên, thuộc tính `id` sẽ phản ánh giá trị khóa chính của `Post` mới được thêm vào, mặc dù ta
+
 # Tài liệu tham khảo
 - http://www.yiiframework.com/doc/guide/1.1/en/database.ar
