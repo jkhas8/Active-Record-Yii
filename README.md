@@ -106,7 +106,33 @@ class Post extends CActiveRecord {
 > );
 > ```
 
+Mặc định. tên của lớp AR giống tên của bảng trong cơ sở dữ liệu. Nếu
+chúng khác nhau hãy ghi đè lên phương thức `tableName()`. Phương thức
+`model()` được khai báo cho mọi lớp AR (để giải thích một cách vắn tắt).
 
+**Thông tin thêm:**
 
+> Để sử dụng bảng tính năng tiền tố (table prefix feature), phương thức
+> `tableName()` của một lớp AR có thể viết như sau:
+> ```php
+> public function tableName() {
+>   return '{{post}}';
+> }
+> ```
+> Thay vì trả lại tên bảng một cách đầy đủ, ta trả lại tên bảng mà không
+> có tiền tố và dấu nháy đôi hay ngặc nhọn kèm theo.
+
+Giá trị một cột của một dòng trong bảng có thể được khai báo như là các
+thuộc tính tương ứng của AR. Ví dụ với `title` của bảng `Post`:
+
+```php
+$post=new Post;
+$post->title='a sample post';
+```
+
+Mặc dù, chưa khai báo thuộc tính `title` trong lớp `Post`, nhưng ta vẫn
+có thể gán giá trị cho nó trong ví dụ trên. Đó là bởi `title` là một cột
+của bảng `tb1_post`, và `CActiveRecord` khiến nó có thể được sử dụng như
+là một thuộc tính với sự giúp đỡ của phương thức ``PHP __get()``. 
 # Tài liệu tham khảo
 - http://www.yiiframework.com/doc/guide/1.1/en/database.ar
