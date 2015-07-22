@@ -163,5 +163,7 @@ $post->save();
 
 Nếu khóa chính của bảng được tăng tự động, sau khi thêm, nó sẽ chứa một khóa chính đã được cập nhật. Trong ví dụ trên, thuộc tính `id` sẽ phản ánh giá trị khóa chính của `Post` mới được thêm vào, mặc dù ta không thay đổi nó.
 
+Nếu một côt được định nghĩa với các giá trị mặc định tĩnh (VD: một chuỗi, một số) trong một lược đồ bảng, thuộc tính tương ứng trong 
+
 # Tài liệu tham khảo
 - http://www.yiiframework.com/doc/guide/1.1/en/database.ar
