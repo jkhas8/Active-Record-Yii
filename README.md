@@ -98,7 +98,7 @@ class Post extends CActiveRecord {
 > import toàn bộ thư mục có chứa lớp AR thay vì including từng cái một.
 > Ví dụ, nếu tất cả các lớp AR đều nằm trong thư mục `protected/models`,
 > chúng ta có thể cấu hình app như sau:
-> ```
+> ```php
 > return array(
 >   'import'=>array(
 >     'application.models.*',
