@@ -49,7 +49,7 @@ return array(
 );
 ```
 
-**Mẹo nhỏ:**
+**Mẹo:**
 
 > Bởi vì Active Record dựa vào các metadata của các bảng để định rõ
 > thông tin của cột, vì thế nên tốn thời gian cho việc đọc và phân tích các metadata. Nếu sơ đồ CSDL ít thay đổi, bạn nên bật schema caching bằng việc thiết lập thuộc tính `CDbConnection::schemaCachingDuration` về giá trị lớn hơn 0.
@@ -67,9 +67,45 @@ nhiều database sử dụng Active Record, bạn nên thông qua `
 CActiveRecord::getDbConnection()`. Lớp `CActiveRecord` sẽ là lớp cơ sở
 cho tất cả các lớp Active Record khác.
 
-**Mẹo nhỏ:**
+**Mẹo:**
 
-> Có 2 cách để làm việc với nhiều DB trong Active Record. Nếu
+> Có 2 cách để làm việc với nhiều DB trong Active Record. Nếu schemas
+> của các DB khác nhau, bạn có thể tạo các lớp Active Record cơ sở khác
+> nhau tương ứng với các implementation khác nhau của `getDbConnection()`. Ngoài ra, có thể thay đổi giá trị trị của `CActiveRecord::db` cũng là một ý tưởng tốt.
+
+# Định nghĩa lớp Active Record
+
+Để truy cập vào một bảng cơ sở dữ liệu, chúng ta cần định nghĩa một lớp
+AR được mở rộng (extending) từ lớp `CActiveRecord`. Mỗi lớp
+AR đại diện cho một bảng, mỗi một trường hợp của lớp đó đại diện cho một
+hàng trong bảng. Ví dụ về lớp AR tượng trưng cho bảng `tb1_post`.
+
+```php
+class Post extends CActiveRecord {
+  public static function model($className=__CLASS__) {
+    return parent::model($className);
+  }
+
+  public function tableName() {
+    return 'tbl_post';
+  }
+}
+```
+
+**Mẹo:**
+
+> Bời vì lớp AR thường được gọi từ nhiều nơi, vì thế chúng ta có thể
+> import toàn bộ thư mục có chứa lớp AR thay vì including từng cái một.
+> Ví dụ, nếu tất cả các lớp AR đều nằm trong thư mục `protected/models`,
+> chúng ta có thể cấu hình app như sau:
+> ```
+> return array(
+>   'import'=>array(
+>     'application.models.*',
+>   ),
+> );
+> ```
+
 
 
 # Tài liệu tham khảo
