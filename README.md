@@ -73,7 +73,7 @@ cho tất cả các lớp Active Record khác.
 > của các DB khác nhau, bạn có thể tạo các lớp Active Record cơ sở khác
 > nhau tương ứng với các implementation khác nhau của `getDbConnection()`. Ngoài ra, có thể thay đổi giá trị trị của `CActiveRecord::db` cũng là một ý tưởng tốt.
 
-# Định nghĩa lớp Active Record
+## Định nghĩa lớp Active Record
 
 Để truy cập vào một bảng cơ sở dữ liệu, chúng ta cần định nghĩa một lớp
 AR được mở rộng (extending) từ lớp `CActiveRecord`. Mỗi lớp
@@ -149,7 +149,7 @@ public function primaryKey() {
 }
 ```
 
-# Tạo bản ghi
+## Tạo bản ghi
 
 Để thêm dòng mới vào bảng cơ sở dữ liệu, ta tạo ra một trường hợp tương ứng với lớp AR, đặt các thuộc tính cho nó tương ứng với các cột trong bảng. Cuối cùng gọi phương thức `save()` để kết thúc.
 
@@ -163,7 +163,65 @@ $post->save();
 
 Nếu khóa chính của bảng được tăng tự động, sau khi thêm, nó sẽ chứa một khóa chính đã được cập nhật. Trong ví dụ trên, thuộc tính `id` sẽ phản ánh giá trị khóa chính của `Post` mới được thêm vào, mặc dù ta không thay đổi nó.
 
-Nếu một côt được định nghĩa với các giá trị mặc định tĩnh (VD: một chuỗi, một số) trong một lược đồ bảng, thuộc tính tương ứng trong 
+Nếu một côt được định nghĩa với các giá trị mặc định tĩnh (VD: một chuỗi, một số) trong một lược đồ bảng, thuộc tính tương ứng trong AR instance sẽ tự động có giá trị như vậy sau khi được tạo ra. Thay đổi giá trị mặc định này bằng cách khai báo trực tiếp trong lớp AR:
 
-# Tài liệu tham khảo
+```php
+class Post extends CActiveRecord {
+  public $title='please enter a title';
+  ......
+}
+
+$post=new Post;
+echo $post->title;  // this would display: please enter a title
+```
+
+Một thuộc tính có thể được thừa kế giá trị của loại `CDbExpression`
+trước khi bản ghi được lưu lại vào cơ sở dữ liệu(trong trường hợp thêm hoặc cập nhật). Ví dụ, để lưu lại một timestamp được trả về bởi hàm `NOW()` của MySQL, ta có thể làm như sau:
+
+```php
+$post=new Post;
+$post->create_time=new CDbExpression('NOW()');
+// $post->create_time='NOW()'; will not work because
+// 'NOW()' will be treated as a string
+$post->save();
+```
+
+**Mẹo:**
+
+> Vì AR cho phép chúng ta có thể thực hiện các thao tác với cơ sở dữ liệu
+> mà không cần phải viết các câu lệnh SQL vướng víu, ta thường muốn biết
+> các câu lệnh SQL được thực hiện bởi dưới AR như thế nào. Điều này hoàn
+> toàn có thể thực hiện được bằng cách bật logging feature của Yii lên.
+> Ví dụ, ta có thể bật `CWebLogRoute` trong phần cấu hình của
+> application, và ta sẽ thấy được câu lệnh SQL đã thực hiện được hiển
+> thị ở cuối cùng của trang web. Ta có thể đặt
+> `CDbConnection::enableParamLogging` có giá trị `true` trong cấu hình
+> của application để các giá trị tham số trong các câu lệnh SQL được log
+> lại.
+
+## Đọc bản ghi
+
+Để đọc dữ liệu trong bảng cơ sở dữ liệu, ta cần gọi phương thức `find`
+như sau:
+
+```php
+// find the first row satisfying the specified condition
+$post=Post::model()->find($condition,$params);
+// find the row with the specified primary key
+$post=Post::model()->findByPk($postID,$condition,$params);
+// find the row with the specified attribute values
+$post=Post::model()->findByAttributes($attributes,$condition,$params);
+// find the first row using the specified SQL statement
+$post=Post::model()->findBySql($sql,$params);
+```
+
+Ở trên, ta đã gọi phương thức `find` với `Post::model()`. Điều cần lưu
+ý ở đây là phương thức tĩnh `model()` là bắt buộc với mọi lớp AR. Phương
+thức trả về một AR instance được sử dụng để truy cập các phương thức
+được phân cấp theo lớp (phương pháp tương tự phương pháp lớp tĩnh) trong
+một đối tượng được xét.
+
+
+
+## Tài liệu tham khảo
 - http://www.yiiframework.com/doc/guide/1.1/en/database.ar
