@@ -339,6 +339,51 @@ $post->delete(); // delete the row from the database table
 
 Chú ý, sau khi xóa, thực thể AR vẫn không đổi, nhưng các hàng tương ứng trong bảng cơ sở dữ liệu đã bị xóa.
 
+Ngoài ra Yii còn cung cấp phương thức để xóa nhiều dòng mà không cần lấy chúng ra trước:
+
+```php
+// delete the rows matching the specified condition
+Post::model()->deleteAll($condition,$params);
+// delete the rows matching the specified condition and primary key(s)
+Post::model()->deleteByPk($pk,$condition,$params);
+```
+
+## Data Validation
+
+Khi thêm hoặc cập nhật một dòng, ta thường kiểm tra xem các cột giá trị có tuân theo một số luật bắt buộc không. Việc này đặc biệt quan trọng khi các giá trị được đưa vào bởi người dùng cuối. Thông thường, ta nên không bao giờ được tin tưởng bất cứ thứ gì được gửi từ phía client.
+
+AR thực hiện xác thực dữ liệu tự động khi `save()` được gọi. Việc xác thực này được dự trên các luật đã được định nghĩa trong phương thức `rule()` của lớp AR. Dưới đây là luồng công việc cần làm để có thể lưu được bản ghi lại:
+
+```php
+if($post->save()) {
+  // data is valid and is successfully inserted/updated
+} else {
+  // data is invalid. call getErrors() to retrieve error messages
+}
+```
+
+Khi dữ liệu dùng cho việc thêm hay câp nhật được gửi lên từ phía người dùng cuối thông qua form HTML, ta cần gán chúng vào các thuộc tính AR tương ứng. Ta có thể thực hiện tương tự như sau:
+
+```php
+$post->title=$_POST['title'];
+$post->content=$_POST['content'];
+$post->save();
+
+//You also can use app in Yii:
+$request = Yii::app->request;
+$post->title=$request->getPost('title',null);
+$post->content=$request->getPost('content',null);
+$post->save();
+```
+
+Nếu có nhiều cột, ta có thể thực hiện như sau:
+
+```php
+// assume $_POST['Post'] is an array of column values indexed by column names
+$post->attributes=$_POST['Post'];
+$post->save();
+```
+
 
 
 ## Tài liệu tham khảo
