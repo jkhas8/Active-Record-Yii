@@ -163,7 +163,7 @@ $post->save();
 
 Nếu khóa chính của bảng được tăng tự động, sau khi thêm, nó sẽ chứa một khóa chính đã được cập nhật. Trong ví dụ trên, thuộc tính `id` sẽ phản ánh giá trị khóa chính của `Post` mới được thêm vào, mặc dù ta không thay đổi nó.
 
-Nếu một côt được định nghĩa với các giá trị mặc định tĩnh (VD: một chuỗi, một số) trong một lược đồ bảng, thuộc tính tương ứng trong AR instance sẽ tự động có giá trị như vậy sau khi được tạo ra. Thay đổi giá trị mặc định này bằng cách khai báo trực tiếp trong lớp AR:
+Nếu một côt được định nghĩa với các giá trị mặc định tĩnh (VD: một chuỗi, một số) trong một lược đồ bảng, thuộc tính tương ứng trong thực thể AR sẽ tự động có giá trị như vậy sau khi được tạo ra. Thay đổi giá trị mặc định này bằng cách khai báo trực tiếp trong lớp AR:
 
 ```php
 class Post extends CActiveRecord {
@@ -217,12 +217,12 @@ $post=Post::model()->findBySql($sql,$params);
 
 Ở trên, ta đã gọi phương thức `find` với `Post::model()`. Điều cần lưu
 ý ở đây là phương thức tĩnh `model()` là bắt buộc với mọi lớp AR. Phương
-thức trả về một AR instance được sử dụng để truy cập các phương thức
+thức trả về một thực thể AR được sử dụng để truy cập các phương thức
 được phân cấp theo lớp (phương pháp tương tự phương pháp lớp tĩnh) trong
 một đối tượng được xét.
 
 Nếu phương thức `find` tìm ra một hàng thỏa mãn điều kiện truy vấn, nó
-sẽ trả về một `Post` instance với các thuộc tính tương ứng với các cột
+sẽ trả về một thực thể `Post` với các thuộc tính tương ứng với các cột
 trong dòng đó. Ta có thể các giá trị đó như làm với các thuộc tính thông
 thường, ví dụ `echo $post->title;`
 
@@ -291,6 +291,53 @@ $posts=Post::model()->findAllByAttributes($attributes,$condition,$params);
 // find all rows using the specified SQL statement
 $posts=Post::model()->findAllBySql($sql,$params);
 ```
+
+Nếu không có gì phù hợp với điều kiện truy vấn, `findAll` sẽ trả về một mảng rỗng (Điều này khác với `find`, bởi `find` sẽ tả về `null` nếu không tìm được).
+
+Bên cạnh `find` và `findAll` còn có các phương thức khác cũng được cung cấp một cách thuận tiện. Ví dụ:
+
+```php
+// get the number of rows satisfying the specified condition
+$n=Post::model()->count($condition,$params);
+// get the number of rows using the specified SQL statement
+$n=Post::model()->countBySql($sql,$params);
+// check if there is at least a row satisfying the specified condition
+$exists=Post::model()->exists($condition,$params);
+```
+
+## Cập nhật bản ghi
+
+Sau khi thực thể AR được tạo ra với các cột giá trị, ta có thể thay đổi chúng và lưu lại vào bảng dữ liệu.
+
+```php
+$post=Post::model()->findByPk(10);
+$post->title='new post title';
+$post->save(); // save the change to database
+```
+
+Ta cũng sử dụng phương thức `save()` như việc tạo để lưu lại các giá trị cập nhật. Nếu một thực thể AR được tạo ra bằng cách sử dụng `new`, thì việc gọi đén `save()` sẽ thêm dòng mới vào bẳng cơ sở dữ liệu. Nếu thực thể AR là kết quả của `find` hoặc `findAll`, việc gọi `save()` lúc này là cập nhật dòng có sẵn trong bảng. Trong thực tế, ta có thể sử dụng `CActiveRecord::isNewRecord` để xác định xem thực thể AR đó có phải mới hay không.
+
+```php
+// update the rows matching the specified condition
+Post::model()->updateAll($attributes,$condition,$params);
+// update the rows matching the specified condition and primary key(s)
+Post::model()->updateByPk($pk,$attributes,$condition,$params);
+// update counter columns in the rows satisfying the specified conditions
+Post::model()->updateCounters($counters,$condition,$params);
+```
+
+Ở đoạn code trên, `$attributes` là một mảng của các cột giá trị được đánh index bởi tên cột; `$counters` là một mảng các giá trị gia tăng được đánh index bởi tên cột; `$condition` và `$params` tương tự như đã nói ở phần trước.
+
+## Xóa bản ghi
+
+Ta cũng có thể xóa một dòng dữ liệu nếu thực thể AR  đã tồn tại (có dòng tương ứng trong bảng).
+
+```php
+$post=Post::model()->findByPk(10); // assuming there is a post whose ID is 10
+$post->delete(); // delete the row from the database table
+```
+
+Chú ý, sau khi xóa, thực thể AR vẫn không đổi, nhưng các hàng tương ứng trong bảng cơ sở dữ liệu đã bị xóa.
 
 
 
