@@ -221,6 +221,77 @@ thức trả về một AR instance được sử dụng để truy cập các p
 được phân cấp theo lớp (phương pháp tương tự phương pháp lớp tĩnh) trong
 một đối tượng được xét.
 
+Nếu phương thức `find` tìm ra một hàng thỏa mãn điều kiện truy vấn, nó
+sẽ trả về một `Post` instance với các thuộc tính tương ứng với các cột
+trong dòng đó. Ta có thể các giá trị đó như làm với các thuộc tính thông
+thường, ví dụ `echo $post->title;`
+
+Phương thức `find` sẽ trả về `null` nếu không tìm thấy gì phù hợp với
+điều kiện truy vấn trong cơ sở dữ liệu.
+
+Khi gọi `find`, ta sử dụng `$condition` và `$params` để định rõ các điều
+kiện truy vấn. `$condition` có thể là một chuỗi tượng trưng cho mệnh đề
+`WHERE` trong câu lệnh SQL, và `$params` là một mảng các tham số với các
+giá trị đã đã được xác định trước trong `$condition`. Ví dụ:
+
+```php
+// find the row with postID=10
+$post=Post::model()->find('postID=:postID', array(':postID'=>10));
+```
+
+**Chú ý:**
+
+> ở trên ta cần phải thoát khỏi tham chiều đến cột `postID` cho một hệ
+> quản trị cơ sở dữ liệu nhất định. Ví dụ, nếu sử dụng PostgreSQL, ta
+> phải viết điều kiện như sau `"postID"=:postID`, bởi PostgreSQL mặc
+> định xử lý tên cột như case-insensitive.
+
+Ta cũng có thể sử dụng `$condition` để định rõ nhiều điều kiện truy vấn
+phức tạp hơn. Thay vì là một chuỗi, ta có thể cho `$condition` thành `CDbCriteria`. Việc này cho phép ta có thể định rõ nhiều điều kiện hơn là chỉ sử dụng mệnh đề `WHERE`. Ví dụ:
+
+```php
+$criteria=new CDbCriteria;
+$criteria->select='title';  // only select the 'title' column
+$criteria->condition='postID=:postID';
+$criteria->params=array(':postID'=>10);
+$post=Post::model()->find($criteria); // $params is not needed
+```
+
+Chú ý, khi sử dụng `CDbCriteria` như điều kiện truy vấn, `$params` sẽ
+khồng cần, vì nó đã được định nghĩa trong `CDbCriteria`.
+
+Một cách khác cho `CDbCriteria` là truyền qua mảng cho phương thức
+`find`. Khóa và giá trị của mảng tương ứng với tên và giá trị thuộc tính
+của criteria. Để dễ hiểu hơn, ta sẽ viết lại ví dụ trên như sau:
+
+```php
+$post=Post::model()->find(array(
+  'select'=>'title',
+  'condition'=>'postID=:postID',
+  'params'=>array(':postID'=>10),
+));
+```
+
+**Thông tin thêm:**
+
+> Khi điều kiện truy vấn có sự kết hợp một số cột với các giá trị cụ
+> thể, ta có thể sử dụng ` findByAttributes()`. Ta đưa tham số `$attributes` thành một mảng của các giá trị đã được đánh index bởi tên cột. Ở một vài framework, việc này được làm bằng cách gọi các phương thức như `findByNameAndTitle`. Mặc dù cách tiếp cận vấn đề như vậy trông có vẻ rất tốt, nhưng nó thưởng xuyên là nguyên nhân của sự nhầm lẫn, conflict và các vấn đề case-sensitivity của tên cột.
+
+Khi nhiều dòng của dữ liệu nối với nhau qua điều kiện truy vấn, ta có
+thể mang tất cả chúng gộp lại tìm với phương thức `findAll`, mỗi phần
+sẽ được tìm tương ứng với phương thức `find` đã mô tả bên trên.
+
+```php
+// find all rows satisfying the specified condition
+$posts=Post::model()->findAll($condition,$params);
+// find all rows with the specified primary keys
+$posts=Post::model()->findAllByPk($postIDs,$condition,$params);
+// find all rows with the specified attribute values
+$posts=Post::model()->findAllByAttributes($attributes,$condition,$params);
+// find all rows using the specified SQL statement
+$posts=Post::model()->findAllBySql($sql,$params);
+```
+
 
 
 ## Tài liệu tham khảo
