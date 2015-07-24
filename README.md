@@ -514,7 +514,7 @@ $posts=Post::model()->published()->recently(3)->findAll();
 Nếu không điền giá trị 3 ở tham số như trên, named scopes `recently` sẽ
 mặc định lấy 5 published post.
 
-## Scopes mặc định
+### Scopes mặc định
 
 Một lớp model có thể có một scopes mặc định cho tất cả các truy vấn có
 liên quan đên model đó. Ví dụ, một website hỗ trợ multiple languages
