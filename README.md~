@@ -420,7 +420,7 @@ trong các lớp con để tùy biến luồng hoạt động của nó.
 
 ## Sử dụng Transaction với AR.
 
-Mỗi thực thể AR là một đặc tính đã định danh `DBConnection` (là một đặc tính
+Mỗi thực thể AR là một đặc tính có tên `DBConnection` (là một đặc tính
 của `CDbConnection`. Do đó ta có thể sử dụng các tính năng transaction
 được cung cấp bởi Yii DAO nếu cần thiết trong khi làm việc với AR.
 
@@ -445,105 +445,9 @@ catch(Exception $e) {
 
 ## Named Scopes
 
-Ý tưởng đầu tiên về named scopes là của Ruby on Rails. Một name scopes
-tượng trưng cho tiêu chuẩn truy vấn được dịnh danh. Nó có thể là tổ hợp
-với nhiều named scopes khác và các truy vấn sử dụng active record.
+Ý
 
-Named scopes được sử dụng chủ yếu qua phương thức
-`CActiveRecord::scopes()`. Ví dụ sau sẽ định nghĩa 2 named scopes
-`published` và `recently` trong model `Post`:
 
-```php
-class Post extends CActiveRecord {
-  ......
-  public function scopes() {
-    return array(
-      'published'=>array(
-         'condition'=>'status=1',
-      ),
-      'recently'=>array(
-        'order'=>'create_time DESC',
-          'limit'=>5,
-      ),
-    );
-  }
-}
-```
 
-Mỗi named scopes được định nghĩa như một mảng có thể khởi chạy thực thể
-`CDbCriteria`. Ví dụ, named scopes `recently` đã chỉ rõ `order` theo
-`create_time DESC` và `limit` bằng 5, sau khi query nó sẽ trả về nhiều
-nhất 5 post đã được sắp xếp.
-
-Named scopes phần lớn được sử dụng để tùy chỉnh phương thức `find`. Một
-vài Named scopes có thể được kết nối với nhay và kết quả của truy vấn
-sẽ hẹp hơn. Ví dụ:
-
-```php
-$posts=Post::model()->published()->recently()->findAll();
-```
-
-Nhìn chung, named scopes phải được đặt bên trái của `find`. Mỗi named
-scopes cung cấp một chuẩn truy vấn khác nhau (có thể là hỗn hợp của các
-chuẩn khác), trong đó bao gốm phương thức `find`. Nó giống như là thêm
-một bộ lọc để truy vấn.
-
-### Tham số named scopes
-
-Named scopes có thể có tham số. Ví dụ trong name scopes `recently`, ta
-có thể tùy biến giá trị `limit`. Để làm được việc đó, thay vì định
-nghĩa named scopes trong phương thức `CActiveRecord::scopes`, ta có thể
-định nghĩa phương thức mới với tên giống tên của named scopes:
-
-```php
-public function recently($limit=5) {
-  $this->getDbCriteria()->mergeWith(array(
-    'order'=>'create_time DESC',
-    'limit'=>$limit,
-  ));
-  return $this;
-}
-```
-
-Sau đó ta có thể sử dụng như sau (lấy 3 published post):
-
-```php
-$posts=Post::model()->published()->recently(3)->findAll();
-```
-
-Nếu không điền giá trị 3 ở tham số như trên, named scopes `recently` sẽ
-mặc định lấy 5 published post.
-
-## Scopes mặc định
-
-Một lớp model có thể có một scopes mặc định cho tất cả các truy vấn có
-liên quan đên model đó. Ví dụ, một website hỗ trợ multiple languages
-muốn chỉ hiện thị nôi dụng có ngôn ngữ mà người dùng đang cài đặt hiện
-tại. Bởi vì có rất nhiều truy vấn có liên quan về mặt nội dung, ta có
-thể định nghĩa một scopes mặc định để giải quyết vấn đề này. Để làm được
-điều đó, ta cần ghi đè lên phương thức `CActiveRecord::defaultScope`:
-
-```php
-class Content extends CActiveRecord {
-  public function defaultScope() {
-    return array(
-      'condition'=>"language='".Yii::app()->language."'",
-    );
-  }
-}
-```
-
-Nếu có một truy vấn đến, phương thức trên sẽ được gọi đến tự động:
-
-```php
-$contents=Content::model()->findAll();
-```
-
-**Chú ý:**
-
-> Scopes và named scopes mặc định chỉ áp dụng cho truy vấn `SELECT`. Nó
-> sẽ tự bỏ qua với các truy vấn `INSERT`, `UPDATE` và `DELETE`. Ngoài ra
-> khi khai báo một scopes (mặc định hoặc định danh), lớp AR không thể
-> thực hiện truy vấn DB trong phương thức đã định nghĩa scopes.
 ## Tài liệu tham khảo
 - http://www.yiiframework.com/doc/guide/1.1/en/database.ar
