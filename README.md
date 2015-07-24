@@ -545,5 +545,6 @@ $contents=Content::model()->findAll();
 > sẽ tự bỏ qua với các truy vấn `INSERT`, `UPDATE` và `DELETE`. Ngoài ra
 > khi khai báo một scopes (mặc định hoặc định danh), lớp AR không thể
 > thực hiện truy vấn DB trong phương thức đã định nghĩa scopes.
+
 ## Tài liệu tham khảo
 - http://www.yiiframework.com/doc/guide/1.1/en/database.ar
